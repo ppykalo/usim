@@ -9,6 +9,8 @@ int main()
   SystemBus bus;
   Clock clock;
 
+  std::cout << "Initializing CPU" << std::endl;
+
   /* Initialize CPU */
   CortexM0 cpu(clock, &bus);
 
@@ -21,7 +23,20 @@ int main()
   Memory sram(1024);
   bus.register_device(0x20000000, &sram);
 
-  clock.tick();
-  clock.tick();
-  clock.tick();
+  try {
+    while (!cpu.is_halted()) {
+      clock.tick();
+    }
+  } catch (const std::exception& ex) {
+    std::cout << "Error: " << ex.what() << std::endl;
+  } catch (...) {
+    std::cout << "Unknown error" << std::endl;
+  }
+
+  if (cpu.is_halted()) {
+    std::cout << "CPU halted" << std::endl;
+  }
+
+  std::cout << "Exiting" << std::endl;
+
 }

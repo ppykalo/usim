@@ -36,6 +36,10 @@ void CortexM0::execute()
   uint16_t inst;
   uint32_t inst32;
 
+  std::cout << ">>> Fetching instruction from  0x" 
+    << std::hex << std::setw(8) << std::setfill('0')
+    << m_regs[15] << std::endl;
+
   inst = fetch_inst();
   m_regs[15] += 2;
 
@@ -46,6 +50,8 @@ void CortexM0::execute()
     m_regs[15] += 2;
     di = decoder.decode(inst, 1);
   }
+
+  std::cout << "    di.op: " << std::dec << (int)di.op << std::endl;
 
   if (di.op == BKPT) {
     m_halted = true;
